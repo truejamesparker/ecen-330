@@ -7,39 +7,71 @@ typedef struct {
 } minimax_board_t;
 
 
+void minimax_computeNextMove(minimax_board_t* board, bool player, uint8_t* row, uint8_t* column) {
+	if (board[row][column] = MINIMAX_EMPTY_SQUARE) {
+		if (player) {
+			board[row][column] = MINIMAX_PLAYER_SQUARE;
+		}
+		else {
+			board[row][column] = MINIMAX_OPPONENT_SQUARE;
+		}
+		score = minimax(board, !player);
+	}
+
+}
+
+
+
+
+
 int minimax(board, player) {
-  if (game is over)   // Recursion base case, there has been a win or a draw.
+	if (minimax_isGameOver(minimax_score_t score) {
+		return score(board, !player); 
+	}   // Recursion base case, there has been a win or a draw.
     // If game is over, you need to evaluate board based upon previous player/opponent.
-    return score(board, !player);  
+     
   // Otherwise, you need to recurse.
   // This while-loop will generate all possible boards.
-  while (there are more moves possible) {  
-  	move = (1,1)
-    move <= next move  // A move is a row-column pair where you will place an X or an O.
-    // Assign the square to the player or opponent.
-    if (player) 
-      board(r, c) <= PLAYER_SQUARE  
-    else 
-      board(r, c) <= OPPONENT_SQUARE
+	uint8_t score_table[9];
+	minimax_move_t move_table[9];
+	score_table[i] = score;
+	move_table[i] = move;
+	for(int _row=0; _rowi<3; _rowi++) {
+    	for(int _col=0; _col<3; _col++) {
+    		if (board[_row][_col] = MINIMAX_EMPTY_SQUARE) {
+				  	uint8_t index = 0;
+				  	minimax_move_t move;
+				  	score = minimax_computeNextMove(&board, player, &move.row, &move.column)
+
+					// Undo the change to the board (return the square to empty).
+					board[_row][_col] = MINIMAX_EMPTY_SQUARE
+  
+
+    		}
 
 
-    score = minimax(board, !player)
 
-
-    add score to move-score table
-    add move to move-score table
-    // Undo the change to the board (return the square to empty).
-    board(r, c) <= EMPTY_SQUARE
-  }
   // Once you get here, the while-loop has completed and so you have all of the scores computed
   // in the move-score table for boards at this level. 
   // Now you need to return the score depending upon whether you are computing min or max.
   if (player) {
-    choice <= get the move with the highest score in the move-score table.
-    score <= highest score in the move-score table.
+  	int16_t high_score=-11;
+  	for(int i=0; int i<10; i++) {
+  		if (score_table[i]  high_score) {
+  			high_score = score_table[i];
+  		}
+  	}
+    choice = move_table[i];
+    score = high_score;
   } else {
-    choice <= get the move with the lowest score in the move-score table.
-    score <= lowest score in the move-score table. 
+	  	int16_t low_score=11;
+	  	for(int i=0; int i<10; i++) {
+	  		if (score_table[i] < low_score) {
+	  			low_score = score_table[i];
+	  		}
+	  	}
+	    choice = move_table[i];
+	    score = low_score;
   }
   return score;
 }
@@ -48,5 +80,5 @@ int minimax(board, player) {
 //if no empyt squares and no win
 
 int8_t isGameOver(score) {
-	if player!
+	if player
 }

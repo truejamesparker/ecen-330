@@ -14,6 +14,8 @@
 #define MINIMAX_DRAW_SCORE 0
 #define MINIMAX_NOT_ENDGAME -1 // Not an end-game.
 
+// This is a test
+
 
 // Boards contain just an array of squares. I used a struct to provide additional abstraction
 // in case I wanted to add something to the board type.
