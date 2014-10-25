@@ -2,18 +2,26 @@
 #define MINIMAX_BOARD_COLUMNS
 
 
-typedef struct {
-	uint8_t squares[MINIMAX_BOARD_ROWS][MINIMAX_BOARD_COLUMNS];  // State of game as passed in.
-} minimax_board_t;
+minimax_board_t gameBoard;
+
+
+// Init the board to all empty squares.
+void minimax_initBoard(&gameBoard) {
+	for(int _row=0; _rowi<3; _rowi++) {
+    	for(int _col=0; _col<3; _col++) {
+    		minimax_board_t 
+    	}
+    } 
+}
 
 
 void minimax_computeNextMove(minimax_board_t* board, bool player, uint8_t* row, uint8_t* column) {
-	if (board[row][column] = MINIMAX_EMPTY_SQUARE) {
+	if (board.squares[row][column] = MINIMAX_EMPTY_SQUARE) {
 		if (player) {
-			board[row][column] = MINIMAX_PLAYER_SQUARE;
+			board.squares[row][column] = MINIMAX_PLAYER_SQUARE;
 		}
 		else {
-			board[row][column] = MINIMAX_OPPONENT_SQUARE;
+			board.squares[row][column] = MINIMAX_OPPONENT_SQUARE;
 		}
 		score = minimax(board, !player);
 	}
@@ -38,13 +46,13 @@ int minimax(board, player) {
 	move_table[i] = move;
 	for(int _row=0; _rowi<3; _rowi++) {
     	for(int _col=0; _col<3; _col++) {
-    		if (board[_row][_col] = MINIMAX_EMPTY_SQUARE) {
+    		if (board.squares[_row][_col] = MINIMAX_EMPTY_SQUARE) {
 				  	uint8_t index = 0;
 				  	minimax_move_t move;
 				  	score = minimax_computeNextMove(&board, player, &move.row, &move.column)
 
 					// Undo the change to the board (return the square to empty).
-					board[_row][_col] = MINIMAX_EMPTY_SQUARE
+					board.squares[_row][_col] = MINIMAX_EMPTY_SQUARE
   
 
     		}
