@@ -3,13 +3,14 @@
 
 
 minimax_board_t gameBoard;
+minimax_move_t gameMove;
 
 
 // Init the board to all empty squares.
 void minimax_initBoard(&gameBoard) {
 	for(int _row=0; _rowi<3; _rowi++) {
     	for(int _col=0; _col<3; _col++) {
-    		minimax_board_t 
+    		gameBoard[_row][_col] = MINIMAX_EMPTY_SQUARE;
     	}
     } 
 }
@@ -29,11 +30,8 @@ void minimax_computeNextMove(minimax_board_t* board, bool player, uint8_t* row, 
 }
 
 
-
-
-
 int minimax(board, player) {
-	if (minimax_isGameOver(minimax_score_t score) {
+	if (minimax_isGameOver(score) {
 		return score(board, !player); 
 	}   // Recursion base case, there has been a win or a draw.
     // If game is over, you need to evaluate board based upon previous player/opponent.
@@ -42,19 +40,18 @@ int minimax(board, player) {
   // This while-loop will generate all possible boards.
 	uint8_t score_table[9];
 	minimax_move_t move_table[9];
-	score_table[i] = score;
-	move_table[i] = move;
+	uint8_t index = 0;
 	for(int _row=0; _rowi<3; _rowi++) {
     	for(int _col=0; _col<3; _col++) {
     		if (board.squares[_row][_col] = MINIMAX_EMPTY_SQUARE) {
-				  	uint8_t index = 0;
-				  	minimax_move_t move;
-				  	score = minimax_computeNextMove(&board, player, &move.row, &move.column)
-
+    				gameMove.row = _row;
+    				gameMove.column = _column;
+				  	score = minimax_computeNextMove(&board, player, &gameMove.row, &gameMove.column);
+				  	score_table[index] = score;
+				  	move_table[index] = gameMove;
 					// Undo the change to the board (return the square to empty).
-					board.squares[_row][_col] = MINIMAX_EMPTY_SQUARE
-  
-
+					board.squares[_row][_col] = MINIMAX_EMPTY_SQUARE;
+					index += 1;
     		}
 
 
@@ -88,5 +85,10 @@ int minimax(board, player) {
 //if no empyt squares and no win
 
 int8_t isGameOver(score) {
-	if player
+	if(score == (MINIMAX_PLAYER_WINNING_SCORE || MINIMAX_OPPONENT_WINNING_SCORE)) {
+		return TRUE;
+	}
+	else {
+		return FALSE:
+	}
 }

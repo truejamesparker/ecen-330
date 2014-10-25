@@ -15,6 +15,9 @@
 #define MINIMAX_DRAW_SCORE 0
 #define MINIMAX_NOT_ENDGAME -1 // Not an end-game.
 
+#define TRUE 1
+#define FALSE 0
+
 // This is a test
 
 
