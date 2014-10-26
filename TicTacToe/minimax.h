@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdint.h>
 // Defines the boundaries of the tic-tac-toe board.
 #define MINIMAX_BOARD_ROWS 3
 #define MINIMAX_BOARD_COLUMNS 3
@@ -17,6 +18,7 @@
 
 #define TRUE 1
 #define FALSE 0
+#define IN_ROW 3
 
 // This is a test
 
