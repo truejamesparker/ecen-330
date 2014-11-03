@@ -1,24 +1,22 @@
 #include "minimax.h"
-#define MINIMAX_BOARD_ROWS 3
-#define MINIMAX_BOARD_COLUMNS 3
 
-
-minimax_board_t gameBoard;
+// Global variable stores the next optimal move
 minimax_move_t choice;
 
 
-// Init the board to all empty squares.
+// Init the board to all empty squares
 void minimax_initBoard(minimax_board_t* board) {
-	for(int _row=0; _row<3; _row++) {
-		for(int _col=0; _col<3; _col++) {
+	for(int _row=0; _row<IN_ROW; _row++) {
+		for(int _col=0; _col<IN_ROW; _col++) {
 			board->squares[_row][_col] = MINIMAX_EMPTY_SQUARE;
     	}
     } 
 }
 
+// Print the board
 void minimax_printBoard(minimax_board_t board) {
-	for (int i=0; i<3; i++) {
-		for (int j=0; j<3; j++) {
+	for (int i=0; i<IN_ROW; i++) {
+		for (int j=0; j<IN_ROW; j++) {
 			uint8_t mark = board.squares[i][j];
 			if (mark == MINIMAX_PLAYER_SQUARE) {
 				printf("[X]");
@@ -30,17 +28,18 @@ void minimax_printBoard(minimax_board_t board) {
 				printf("[ ]");
 			}
 			else {
-				printf("[U]");
+				printf("[?]"); // Uninitialized/corrupted square
 			}
 		}
 		printf("\n\r");
 	}
+	printf("\n\r");
 }
 
 
-//if no empty squares and no win
+// Check if game is over
 bool minimax_isGameOver(minimax_score_t score) {
-	if(score == MINIMAX_PLAYER_WINNING_SCORE || score == MINIMAX_OPPONENT_WINNING_SCORE || score == MINIMAX_DRAW_SCORE) {
+	if(score != MINIMAX_NOT_ENDGAME) {
 		return TRUE;
 	}
 	else {
@@ -49,55 +48,51 @@ bool minimax_isGameOver(minimax_score_t score) {
 }
 
 // Returns the score of the board, based upon the player.
-int16_t minimax_computeBoardScore(minimax_board_t board, bool player) {
+int16_t minimax_computeBoardScore(minimax_board_t* _board, bool player) {
+	minimax_board_t board = *_board;
 	minimax_score_t winning_score;
-	uint8_t winning_product;
-	uint8_t col_score[3];
-	uint8_t row_score[3];
-	int8_t row_product;
-	int8_t col_product;
+	uint8_t mark;
 
 	if (player) {
-		winning_product = MINIMAX_PLAYER_SQUARE * IN_ROW;
+		mark = MINIMAX_PLAYER_SQUARE;
 		winning_score = MINIMAX_PLAYER_WINNING_SCORE;
 	}
 	else {
-		winning_product = MINIMAX_OPPONENT_SQUARE * IN_ROW;
+		mark = MINIMAX_OPPONENT_SQUARE;
 		winning_score = MINIMAX_OPPONENT_WINNING_SCORE;
 	}
 
-	// Calculating row/col products
+	// Check for row/column wins
 	for (int i=0; i<IN_ROW; i++) {
-		row_product = (board.squares[i][0] * board.squares[i][1] * board.squares[i][2]);
-		row_score[i] = row_product;
-		col_product = (board.squares[0][i] * board.squares[1][i] * board.squares[2][i]);
-		col_score[i] = col_product;
-	}
-	// Checking row/col products for win
-	for(int i=0; i<IN_ROW; i++) {
-		if (col_score[i] == winning_product || row_score[i] == winning_product) {
+		if (board.squares[i][0] == mark && board.squares[i][1] == mark && board.squares[i][2] == mark) {
+			return winning_score;
+		}
+		if (board.squares[0][i] == mark && board.squares[1][i] == mark && board.squares[2][i] == mark) {
 			return winning_score;
 		}
 	}
 	// Check for diagonal wins
-	if ((board.squares[0][0] * board.squares[1][1] * board.squares[2][2]) == winning_product) {
+	if (board.squares[0][0] == mark && board.squares[1][1] == mark && board.squares[2][2] == mark) {
 		return winning_score;
 	}
-	if ((board.squares[2][0] * board.squares[1][1] * board.squares[0][2]) == winning_product) {
+	if (board.squares[2][0] == mark && board.squares[1][1] == mark && board.squares[0][2] == mark) {
 		return winning_score;
 	}
-	// Checking for not end of game
-	for(int i=0; i<IN_ROW; i++) {
-		if (col_score[i] == 0 || row_score[i] == 0) {
-			return MINIMAX_NOT_ENDGAME;
+	// Check for not end of game
+	for(int _row=0; _row<IN_ROW; _row++) {
+		for (int _col=0; _col<IN_ROW; _col++) {
+			if (board.squares[_row][_col] == MINIMAX_EMPTY_SQUARE) {
+				return MINIMAX_NOT_ENDGAME;
+			}
 		}
 	}
+	// It's a draw!
 	return MINIMAX_DRAW_SCORE;
 }
 
 
 int minimax(minimax_board_t board, bool player) {
-	minimax_score_t currentScore = minimax_computeBoardScore(board, !player);
+	minimax_score_t currentScore = minimax_computeBoardScore(&board, !player);
 	uint8_t gameOver = minimax_isGameOver(currentScore);
 	if (gameOver) {
 		return currentScore;
@@ -106,14 +101,14 @@ int minimax(minimax_board_t board, bool player) {
      
   // Otherwise, you need to recurse.
   // This while-loop will generate all possible boards.
-	uint8_t score_table[9];
+	minimax_score_t score_table[9];
 	minimax_move_t move_table[9];
 	minimax_move_t nextMove;
 	minimax_score_t score;
 	int8_t mark;
 	uint8_t index = 0;
-	for(int _row=0; _row<3; _row++) {
-    	for(int _col=0; _col<3; _col++) {
+	for(int _row=0; _row<IN_ROW; _row++) {
+    	for(int _col=0; _col<IN_ROW; _col++) {
     		if (board.squares[_row][_col] == MINIMAX_EMPTY_SQUARE) {
     				nextMove.row = _row;
     				nextMove.column = _col;
@@ -135,15 +130,13 @@ int minimax(minimax_board_t board, bool player) {
     	}
 	}
 
-  // Once you get here, the while-loop has completed and so you have all of the scores computed
-  // in the move-score table for boards at this level. 
-  // Now you need to return the score depending upon whether you are computing min or max.
-
 	minimax_score_t scoreChoice;
+
+	// Choose greatest value if player (max)
 	if (player) {
 		int16_t high_score= MINIMAX_OPPONENT_WINNING_SCORE - 1;
 		for (int i=0; i<index; i++) {
-			printf("Score: %d", score_table[i]);
+			//printf("Score: %d\n\r", score_table[i]);
 			if (score_table[i] > high_score) {
 				high_score = score_table[i];
 				choice = move_table[i];
@@ -152,10 +145,11 @@ int minimax(minimax_board_t board, bool player) {
 		scoreChoice = high_score;
 	}
 
+	// Choose least value if !player (min)
 	else {
 		int16_t low_score= MINIMAX_PLAYER_WINNING_SCORE + 1;
 		for(int i=0; i<index; i++) {
-			printf("Score: %d", score_table[i]);
+			//printf("Score: %d\n\r", score_table[i]);
 	  		if (score_table[i] < low_score) {
 	  			low_score = score_table[i];
 	  			choice = move_table[i];
@@ -164,12 +158,13 @@ int minimax(minimax_board_t board, bool player) {
 
 		scoreChoice = low_score;
 	}
+
   return scoreChoice;
 }
 
-
+// Compute the next optimal move
 void minimax_computeNextMove(minimax_board_t* board, bool player, uint8_t* row, uint8_t* column) {
-	minimax_printBoard(*board);
+	//minimax_printBoard(*board); // Debug print
 	uint8_t mark;
 	if (player) {
 		mark = MINIMAX_PLAYER_SQUARE;
@@ -180,5 +175,5 @@ void minimax_computeNextMove(minimax_board_t* board, bool player, uint8_t* row, 
 	minimax(*board, player);
 	*row = choice.row;
 	*column = choice.column;
-	board->squares[*row][*column] = mark;
+	board->squares[*row][*column] = mark; // Debug function for self-play
 }
